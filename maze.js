@@ -1,9 +1,9 @@
 var vimg = document.getElementById("vimg");
 
-var width = 5;
-var height = 5;
+var width = 20;
+var height = 20;
 var maze = [];
-
+var size = 20;
 //initialize walls code
 var makeTemp = function(width, height, block_h, block_w){
   for (i = 0; i < width; i++){
@@ -61,7 +61,7 @@ var makeTemp = function(width, height, block_h, block_w){
 }
 
 //actually make walls
-makeTemp(width, height, 20, 20);
+makeTemp(width, height, size, size);
 
 /*
 //randomize start and end
@@ -74,13 +74,15 @@ end.setAttribute("fill","white");
 */
 
 
-
+//returns array of neighboring blocks
 var getNeighbors = function(block_x, block_y){
     neighbors = [];
     if (block_x+1 <= width-1){
       neighbors.push(maze[block_x+1][block_y]);
     }
     if (block_x-1 >= 0){
+      console.log(block_x,block_y);
+      console.log(maze[block_x-1][block_y]);
       neighbors.push(maze[block_x-1][block_y]);
     }
     if (block_y+1 <= width-1){
@@ -91,7 +93,9 @@ var getNeighbors = function(block_x, block_y){
     }
     return neighbors;
 }
-console.log(getNeighbors(0,0));
+//console.log(getNeighbors(0,0));
+
+//returns array of unvisited neighboring blocks
 var getUVN = function(neighbors){
   uvn = [];
   for (i = 0; i < neighbors.length; i++){
@@ -103,9 +107,11 @@ var getUVN = function(neighbors){
   return uvn;
 }
 
+//returns true if there exists an unvisited neighboring block,
+//returns false, otherwise
 var hasUVN = function(neighbors){
     for (i = 0; i < neighbors.length; i++){
-      if (neighbors[i]["block"].getAttribute("fill") == "white"){
+      if (neighbors[i]["block"].getAttribute("fill") != "white"){
         return true;
       }
     }
@@ -120,6 +126,7 @@ var makePath = function(block_x, block_y){
   neighbors = getNeighbors(block_x, block_y);
   uvn = getUVN(neighbors);
   if (!hasUVN(neighbors)){
+    console.log(1);
     return true;
   } else if (hasUVN(neighbors)){
     var curr = maze[block_x][block_y];
@@ -137,7 +144,8 @@ var makePath = function(block_x, block_y){
       }
     }
 
-    return makePath(uvn[rand_num]["block"].getAttribute("x")/width, uvn[rand_num]["block"].getAttribute("y")/width);
+    console.log()
+    return makePath(uvn[rand_num]["block"].getAttribute("x")/size, uvn[rand_num]["block"].getAttribute("y")/size);
 
   } else if (stack != []){
     return makePath(stack.pop());
