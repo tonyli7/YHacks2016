@@ -5,6 +5,7 @@ var height = 10;
 var maze = [];
 var size = 20;
 //initialize walls code
+
 var makeTemp = function(width, height, block_h, block_w){
   for (i = 0; i < width; i++){
     maze.push([])
@@ -122,49 +123,58 @@ var hasUVN = function(neighbors){
     return false;
 }
 
+//return true if there exists an unvisited block
+var existsUVC = function(){
+  for (i = 0; i < maze.length; i++){
+    for (j = 0; j < maze[i].length; j++){
+      console.log(maze[i][j],1);
+      if (maze[i][j]["block"].getAttribute("fill") == "#ff0000"){
+        console.log(maze[i][j]["block"].getAttribute("fill"))
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 var stack = [];
 var start_x = Math.floor(Math.random()*(width-2))+1
 var start_y = Math.floor(Math.random()*(width-2))+1
 
+
 var makePath = function(block_x, block_y){
   neighbors = getNeighbors(block_x, block_y);
   uvn = getUVN(neighbors);
-  if (!hasUVN(neighbors)){
-    //console.log(1);
-    return true;
-  } else if (hasUVN(neighbors)){
-    var curr = maze[block_x][block_y];
-    curr["block"].setAttribute("fill","white");
 
-    rand_num = Math.floor(Math.random()*uvn.length);
-    uvn[rand_num]["block"].setAttribute("fill", "green");
-    stack.push(uvn[rand_num]);
-    console.log(uvn[rand_num]);
+  if (hasUVN(neighbors)){
+      var curr = maze[block_x][block_y];
+      curr["block"].setAttribute("fill","white");
 
-    //remove walls
-    for (var curr_key in curr){
-      for (var uvn_key in uvn[rand_num]){
-        if (curr.hasOwnProperty(curr_key) &&
-            uvn[rand_num].hasOwnProperty(uvn_key)){
+      rand_num = Math.floor(Math.random()*uvn.length);
 
+      stack.push(uvn[rand_num]);
+      console.log(uvn[rand_num]);
+
+      //remove walls
+      for (var curr_key in curr){
+        for (var uvn_key in uvn[rand_num]){
+          if (curr.hasOwnProperty(curr_key) &&
+              uvn[rand_num].hasOwnProperty(uvn_key)){
               if ((curr[curr_key].getAttribute("x1") == uvn[rand_num][uvn_key].getAttribute("x1")) &&
                   (curr[curr_key].getAttribute("x2") == uvn[rand_num][uvn_key].getAttribute("x2")) &&
                   (curr[curr_key].getAttribute("y1") == uvn[rand_num][uvn_key].getAttribute("y1")) &&
                   (curr[curr_key].getAttribute("y2") == uvn[rand_num][uvn_key].getAttribute("y2")) &&
                   curr_key != "block"){
 
-                    //console.log(maze[0][0]["block"].getAttribute("x1"));
-                    console.log(uvn[rand_num][uvn_key]);
-                    console.log(uvn[rand_num][uvn_key].getAttribute("x1")/size)
-                    console.log(maze[parseInt((uvn[rand_num]["block"].getAttribute("x")))/size][parseInt((uvn[rand_num]["block"].getAttribute("y")))/size][uvn_key]);
-                    console.log(curr[curr_key]);
 
                     vimg.removeChild(curr[curr_key]);
+                    delete maze[parseInt((curr["block"].getAttribute("x")))/size][parseInt((curr["block"].getAttribute("y")))/size][curr_key];
                     vimg.removeChild(maze[parseInt((uvn[rand_num]["block"].getAttribute("x")))/size][parseInt((uvn[rand_num]["block"].getAttribute("y")))/size][uvn_key]);
+                    delete maze[parseInt((uvn[rand_num]["block"].getAttribute("x")))/size][parseInt((uvn[rand_num]["block"].getAttribute("y")))/size][uvn_key];
 
 
-                    //var oldChild2 = vimg.removeChild(uvn[uvn_key]);
-              }
+                        //var oldChild2 = vimg.removeChild( uvn[uvn_key]);
+          }
 
         }
       }
@@ -173,16 +183,26 @@ var makePath = function(block_x, block_y){
 
     return makePath(uvn[rand_num]["block"].getAttribute("x")/size, uvn[rand_num]["block"].getAttribute("y")/size);
 
-  } else if (stack.length != 0){
-    return makePath(stack.pop());
-  }
+    } else if (stack.length != 0){
+
+      var temp = stack.pop()["block"];
+      var temp_x = temp.getAttribute("x")/size;
+      var temp_y = temp.getAttribute("y")/size;
+
+      console.log("temp",temp);
+      return makePath(temp_x, temp_y);
+
+    }
 }
 //console.log(maze[5][12]["wall_4"])
 // for (i = 0; i<vimg.children.length; i++){
 //   console.log(vimg.children[i]);
 // }
 
-makePath(start_x, start_y)
+// while(existsUVC){
+//   makePath(start_x, start_y);
+// }
+makePath(start_x, start_y);
 maze[start_x][start_y]["block"].setAttribute("fill","purple");
 // console.log(vimg.children)
 /*
