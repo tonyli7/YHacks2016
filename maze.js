@@ -1,9 +1,10 @@
 var vimg = document.getElementById("vimg");
 
-var width = 10;
-var height = 10;
+//=========================================Maze Code==================================
+var width = 20;
+var height = 20;
 var maze = [];
-var size = 20;
+var size = 30;
 //initialize walls code
 
 var makeTemp = function(width, height, block_h, block_w){
@@ -68,16 +69,6 @@ var makeTemp = function(width, height, block_h, block_w){
 //actually make walls
 makeTemp(width, height, size, size);
 
-/*
-//randomize start and end
-var start_i = Math.floor(Math.random()*(width-2))+1
-var end_i = Math.floor(Math.random()*(width-2))+1
-var start = maze[0][start_i];
-var end = maze[width-1][end_i];
-start.setAttribute("fill","white");
-end.setAttribute("fill","white");
-*/
-
 
 //returns array of neighboring blocks
 var getNeighbors = function(block_x, block_y){
@@ -86,8 +77,7 @@ var getNeighbors = function(block_x, block_y){
       neighbors.push(maze[block_x+1][block_y]);
     }
     if (block_x-1 >= 0){
-      //console.log(block_x,block_y);
-      //console.log(maze[block_x-1][block_y]);
+
       neighbors.push(maze[block_x-1][block_y]);
     }
     if (block_y+1 <= width-1){
@@ -127,9 +117,9 @@ var hasUVN = function(neighbors){
 var existsUVC = function(){
   for (i = 0; i < maze.length; i++){
     for (j = 0; j < maze[i].length; j++){
-      console.log(maze[i][j],1);
+
       if (maze[i][j]["block"].getAttribute("fill") == "#ff0000"){
-        console.log(maze[i][j]["block"].getAttribute("fill"))
+
         return true;
       }
     }
@@ -153,7 +143,7 @@ var makePath = function(block_x, block_y){
       rand_num = Math.floor(Math.random()*uvn.length);
 
       stack.push(uvn[rand_num]);
-      console.log(uvn[rand_num]);
+
 
       //remove walls
       for (var curr_key in curr){
@@ -189,7 +179,7 @@ var makePath = function(block_x, block_y){
       var temp_x = temp.getAttribute("x")/size;
       var temp_y = temp.getAttribute("y")/size;
 
-      console.log("temp",temp);
+
       return makePath(temp_x, temp_y);
 
     }
@@ -199,5 +189,197 @@ var makePath = function(block_x, block_y){
 // while(existsUVC){
 //   makePath(start_x, start_y);
 // }
+
 makePath(start_x, start_y);
-maze[start_x][start_y]["block"].setAttribute("fill","purple");
+
+var end = document.createElementNS("http://www.w3.org/2000/svg","text");
+end.textContent = "END"
+end.setAttribute("x", width*size - size/2-size/4)
+end.setAttribute("y", height*size - size/2)
+end.setAttribute("font-size", 8)
+vimg.appendChild(end);
+
+
+//============================================Player Code==========================================================================================
+
+var player = document.createElementNS("http://www.w3.org/2000/svg","circle");
+player.setAttribute("cx", size/2)
+player.setAttribute("cy", size/2)
+player.setAttribute("r", size/4)
+
+vimg.appendChild(player);
+
+
+// var move = function(){
+//   var prevX = player.getAttribute("cx");
+//   var prevY = player.getAttribute("cy");
+//
+//   block_x = player.getAttribute("cx")-size/2
+//   block_y = player.getAttribute("cy")-size/2
+//   //console.log(maze[block_x][block_y]);
+//   var topWall = isIn(block_x, block_y, "wall_1");
+//   var botWall = isIn(block_x, block_y, "wall_2");
+//   var leftWall = isIn(block_x, block_y, "wall_3");
+//   var rightWall = isIn(block_x, block_y, "wall_4");
+//
+//
+//   if (upkeydown){
+//     upkeydown = false;
+//     if (topWall){
+//       player.setAttribute("cy", prevY);
+//     }else{
+//       player.setAttribute("cy", prevY - size);
+//     }
+//
+//   }
+//   if (downkeydown){
+//     downkeydown = false;
+//     if (botWall){
+//       player.setAttribute("cy", prevY);
+//     }else{
+//       player.setAttribute("cy", prevY + size);
+//     }
+//
+//   }
+//   if (leftkeydown){
+//     leftkeydown = false;
+//     if (leftWall){
+//       player.setAttribute("cx", prevX);
+//     }else{
+//       player.setAttribute("cx", prevX - size);
+//     }
+//
+//   }
+//   if (rightkeydown){
+//     rightkeydown = false;
+//     if (rightWall){
+//
+//       player.setAttribute("cx", prevX);
+//     }else{
+//       player.setAttribute("cx", prevX + size);
+//     }
+//
+//
+//   }
+//
+// }
+
+
+var isIn = function(block_x, block_y, wall){
+  //console.log(maze[block_x][block_y]);
+  for (var key in maze[block_x][block_y]){
+    console.log("key",key);
+    if (wall == key){
+      return true;
+    }
+  }
+  return false;
+}
+
+
+var upkeydown = false;
+var downkeydown = false;
+var leftkeydown = false;
+var rightkeydown = false;
+
+document.onkeydown = function(e){
+    //console.log(keydown);
+
+
+
+
+
+
+    if(e.keyCode==37){
+      if (!leftkeydown){
+        leftkeydown = true;
+        console.log("left")
+
+        var prevX = parseInt(player.getAttribute("cx"));
+        var prevY = parseInt(player.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2
+
+        var leftWall = isIn(block_x/size, block_y/size, "wall_3");
+        if (!leftWall){
+
+          player.setAttribute("cx", prevX - size);
+          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+        }
+      }
+    }
+    if(e.keyCode==38){
+      if (!upkeydown){
+        upkeydown = true;
+        console.log("up")
+        var prevX = parseInt(player.getAttribute("cx"));
+        var prevY = parseInt(player.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2
+
+        var topWall = isIn(block_x/size, block_y/size, "wall_1");
+        if (!topWall){
+          //console.log("maze[block_x][block_y]", maze[block_x][block_y]["wall_1"]);
+          console.log(topWall);
+          player.setAttribute("cy", prevY - size);
+          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+        }
+      }
+    }
+    if(e.keyCode==39){
+      if (!rightkeydown){
+        rightkeydown = true;
+        console.log("right")
+        //console.log("maze[block_x][block_y]", maze[block_x][block_y]["wall_4"]);
+        var prevX = parseInt(player.getAttribute("cx"));
+        var prevY = parseInt(player.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2
+
+        var rightWall = isIn(block_x/size, block_y/size, "wall_4");
+        if (!rightWall){
+
+          player.setAttribute("cx", prevX + size);
+          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+        }
+      }
+
+    }
+    if(e.keyCode==40){
+      if (!downkeydown){
+        downkeydown = true;
+        console.log("down")
+
+        var prevX = parseInt(player.getAttribute("cx"));
+        var prevY = parseInt(player.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2
+
+        var botWall = isIn(block_x/size, block_y/size, "wall_2");
+
+        if (!botWall){
+          console.log("botWall",botWall);
+          console.log("maze[block_x][block_y]",block_y);
+          player.setAttribute("cy", prevY + size);
+          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+        }
+      }
+
+
+    }
+}
+
+document.onkeyup = function(e){
+
+    leftkeydown = false;
+    upkeydown = false;
+    rightkeydown = false;
+    downkeydown = false;
+
+}
+
+intervalID = window.setInterval(onkeydown,1);
