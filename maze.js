@@ -2,8 +2,8 @@ var vimg = document.getElementById("vimg");
 //var wimg = document.getElementById("wimg");
 
 //=========================================Maze Code==================================
-var width = 20;
-var height = 20;
+var width = 10;
+var height = 10;
 var maze = [];
 var maze2 = [];
 var size = 14;
@@ -528,7 +528,7 @@ document.onkeydown = function(e){
           player2.setAttribute("cx", prevX + size);
           if (trail2[trail2.length-1]["dir"] == "left"){
 
-            vimg.removeChild(trail[trail2.length-1]["line"])
+            vimg.removeChild(trail2[trail2.length-1]["line"])
             trail2.pop();
           }else{
             trace.setAttribute("x1", prevX);
