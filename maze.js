@@ -2,8 +2,8 @@ var vimg = document.getElementById("vimg");
 //var wimg = document.getElementById("wimg");
 
 //=========================================Maze Code==================================
-var width = 10;
-var height = 10;
+var width = 20;
+var height = 20;
 var maze = [];
 var maze2 = [];
 var size = 14;
@@ -608,11 +608,11 @@ var time = function(){
   var p1 = document.getElementById("p1_time")
 
   if (!win1){
-    p1.innerHTML = parseInt(p1.innerHTML)+1
+    p1.innerHTML = parseInt(p1.innerHTML)+1+" sec"
   }
   var p2 = document.getElementById("p2_time")
   if (!win2){
-    p2.innerHTML = parseInt(p2.innerHTML)+1
+    p2.innerHTML = parseInt(p2.innerHTML)+1+" sec"
   }
 
 
