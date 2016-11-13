@@ -1,0 +1,39 @@
+svg{
+  position:absolute;
+  color: white;
+}
+
+body{
+  background-color: black;
+}
+
+.scoreboard{
+    position: absolute;
+    left: 60%;
+    color: white;
+    border: 1px solid white;
+    font-size: 18px;
+    padding: 30px 20px;
+}
+
+.time{
+  position: relative;
+  color: white;
+}
+
+#winner{
+  font-size: 30px;
+  position: relative;
+  left: 60%;
+  top: 300px;
+  color: white;
+}
+p{
+    color: white;
+    position: absolute;
+    right: 75%;
+    left: 5%;
+    top: 25%;
+    font-size: 24px;
+
+}

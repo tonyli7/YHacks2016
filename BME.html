@@ -1,6 +1,16 @@
 <!DOCTYPE HTML>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
 <body>
-  <svg xmlns="http://www.w3.org/2000/svg" id="vimg" viewBox="0 0 800 700" currentScale="1">Hello</svg>
+  <svg xmlns="http://www.w3.org/2000/svg" id="vimg" viewBox="-50 0 800 600" currentScale="1"></svg>
+
+  <div class="scoreboard">
+    <div class="p1">Player 1</div><p id="p1_time" class="time">0</p><br>
+    <div class="p2">Player 2</div><p id="p2_time" class="time">0</p>
+  </div>
+
+  <div id="winner"></div>
 </body>
 
 <script src="maze.js"></script>

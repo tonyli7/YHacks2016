@@ -195,9 +195,10 @@ makePath(start_x, start_y);
 
 var end = document.createElementNS("http://www.w3.org/2000/svg","text");
 end.textContent = "END"
-end.setAttribute("x", width*size - size/2-size/4)
+end.setAttribute("x", width*size - size/2)
 end.setAttribute("y", height*size - size/2)
 end.setAttribute("font-size", 8)
+end.setAttribute("fill","red")
 vimg.appendChild(end);
 
 //make second copy
@@ -231,9 +232,10 @@ for (i = 0; i < maze2.length; i++){
 
 var end2 = document.createElementNS("http://www.w3.org/2000/svg","text");
 end2.textContent = "END"
-end2.setAttribute("x", width*size - size/2-size/4)
+end2.setAttribute("x", width*size - size/2)
 end2.setAttribute("y", height*size - size/2 + height*size + 30)
 end2.setAttribute("font-size", 8)
+end2.setAttribute("fill", "green")
 vimg.appendChild(end2);
 //============================================Player Code==========================================================================================
 
@@ -244,9 +246,18 @@ player.setAttribute("r", size/4)
 
 vimg.appendChild(player);
 
+var player2 = document.createElementNS("http://www.w3.org/2000/svg","circle");
+player2.setAttribute("cx", size/2)
+player2.setAttribute("cy", size/2 + height*size + 30)
+player2.setAttribute("r", size/4)
+
+vimg.appendChild(player2);
+
 var trail = [{"dir": "none",
               "line": "dummy"}];
 
+var trail2 = [{"dir": "none",
+              "line": "dummy"}];
 
 var isIn = function(block_x, block_y, wall){
   //console.log(maze[block_x][block_y]);
@@ -264,6 +275,11 @@ var upkeydown = false;
 var downkeydown = false;
 var leftkeydown = false;
 var rightkeydown = false;
+
+var wkeydown = false;//87
+var skeydown = false;//83
+var akeydown = false;//65
+var dkeydown = false;//68
 
 document.onkeydown = function(e){
     //console.log(keydown);
@@ -417,6 +433,155 @@ document.onkeydown = function(e){
         }
       }
     }
+    if(e.keyCode==65){
+      if (!akeydown){
+        akeydown = true;
+        console.log("left")
+
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "green")
+        var prevX = parseInt(player2.getAttribute("cx"));
+        var prevY = parseInt(player2.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2-height*size-30
+
+        var leftWall = isIn(block_x/size, block_y/size, "wall_3");
+        if (!leftWall){
+
+          player2.setAttribute("cx", prevX - size);
+
+          if (trail2[trail2.length-1]["dir"] == "right"){
+
+            vimg.removeChild(trail2[trail2.length-1]["line"])
+            trail2.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX - size);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY);
+
+
+            vimg.appendChild(trace);
+
+            trail2.push({"dir":"left",
+                        "line": trace})
+          }
+
+        }
+      }
+    }
+    if(e.keyCode==87){
+      if (!wkeydown){
+        wkeydown = true;
+        console.log("up")
+
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "green")
+        var prevX = parseInt(player2.getAttribute("cx"));
+        var prevY = parseInt(player2.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2-height*size-30
+
+        var topWall = isIn(block_x/size, block_y/size, "wall_1");
+        if (!topWall){
+          //console.log("maze[block_x][block_y]", maze[block_x][block_y]["wall_1"]);
+
+          player2.setAttribute("cy", prevY - size);
+
+          if (trail2[trail2.length-1]["dir"] == "down"){
+
+            vimg.removeChild(trail2[trail2.length-1]["line"])
+            trail2.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY - size);
+
+            vimg.appendChild(trace);
+
+            trail2.push({"dir":"up",
+                        "line": trace})
+          }
+        }
+      }
+    }
+    if(e.keyCode==68){
+      if (!dkeydown){
+        dkeydown = true;
+        console.log("right")
+
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "green")
+
+        var prevX = parseInt(player2.getAttribute("cx"));
+        var prevY = parseInt(player2.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2-height*size-30
+
+        var rightWall = isIn(block_x/size, block_y/size, "wall_4");
+        if (!rightWall){
+
+          player2.setAttribute("cx", prevX + size);
+          if (trail2[trail2.length-1]["dir"] == "left"){
+
+            vimg.removeChild(trail[trail2.length-1]["line"])
+            trail2.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX + size);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY);
+
+            vimg.appendChild(trace);
+
+            trail2.push({"dir":"right",
+                        "line": trace})
+          }
+        }
+      }
+
+    }
+    if(e.keyCode==83){
+      if (!skeydown){
+        skeydown = true;
+        console.log("down")
+
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "green")
+
+        var prevX = parseInt(player2.getAttribute("cx"));
+        var prevY = parseInt(player2.getAttribute("cy"));
+
+        var block_x = prevX-size/2
+        var block_y = prevY-size/2-height*size-30
+
+        var botWall = isIn(block_x/size, block_y/size, "wall_2");
+
+        if (!botWall){
+          player2.setAttribute("cy", prevY + size);
+
+          if (trail2[trail2.length-1]["dir"] == "up"){
+
+            vimg.removeChild(trail2[trail2.length-1]["line"])
+            trail2.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY + size);
+
+            vimg.appendChild(trace);
+
+            trail2.push({"dir":"down",
+                        "line": trace})
+          }
+        }
+      }
+    }
 }
 
 document.onkeyup = function(e){
@@ -426,4 +591,57 @@ document.onkeyup = function(e){
     rightkeydown = false;
     downkeydown = false;
 
+    wkeydown = false;//87
+    skeydown = false;//83
+    akeydown = false;//65
+    dkeydown = false;//68
+
 }
+
+
+var intervalID;
+
+// var d = new Date();
+var win1 = false;
+var win2 = false;
+var time = function(){
+  var p1 = document.getElementById("p1_time")
+
+  if (!win1){
+    p1.innerHTML = parseInt(p1.innerHTML)+1
+  }
+  var p2 = document.getElementById("p2_time")
+  if (!win2){
+    p2.innerHTML = parseInt(p2.innerHTML)+1
+  }
+
+
+  if (player.getAttribute("cx") == end.getAttribute("x") &&
+      player.getAttribute("cy") == end.getAttribute("y")){
+        //clearInterval(intervalID);
+
+        var winner = document.getElementById("winner")
+        if (!win2){
+            winner.innerHTML = "Player 1 Wins!";
+        }
+
+        win1 = true;
+  }
+  else if(player2.getAttribute("cx") == end2.getAttribute("x") &&
+          player2.getAttribute("cy") == end2.getAttribute("y")){
+
+        //clearInterval(intervalID);
+        var winner = document.getElementById("winner")
+        if (!win1){
+            winner.innerHTML = "Player 2 Wins!";
+        }
+
+        win2 = true;
+
+  }
+}
+
+
+
+
+intervalID = setInterval(time,1000);
