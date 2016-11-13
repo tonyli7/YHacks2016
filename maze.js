@@ -209,60 +209,8 @@ player.setAttribute("r", size/4)
 
 vimg.appendChild(player);
 
-
-// var move = function(){
-//   var prevX = player.getAttribute("cx");
-//   var prevY = player.getAttribute("cy");
-//
-//   block_x = player.getAttribute("cx")-size/2
-//   block_y = player.getAttribute("cy")-size/2
-//   //console.log(maze[block_x][block_y]);
-//   var topWall = isIn(block_x, block_y, "wall_1");
-//   var botWall = isIn(block_x, block_y, "wall_2");
-//   var leftWall = isIn(block_x, block_y, "wall_3");
-//   var rightWall = isIn(block_x, block_y, "wall_4");
-//
-//
-//   if (upkeydown){
-//     upkeydown = false;
-//     if (topWall){
-//       player.setAttribute("cy", prevY);
-//     }else{
-//       player.setAttribute("cy", prevY - size);
-//     }
-//
-//   }
-//   if (downkeydown){
-//     downkeydown = false;
-//     if (botWall){
-//       player.setAttribute("cy", prevY);
-//     }else{
-//       player.setAttribute("cy", prevY + size);
-//     }
-//
-//   }
-//   if (leftkeydown){
-//     leftkeydown = false;
-//     if (leftWall){
-//       player.setAttribute("cx", prevX);
-//     }else{
-//       player.setAttribute("cx", prevX - size);
-//     }
-//
-//   }
-//   if (rightkeydown){
-//     rightkeydown = false;
-//     if (rightWall){
-//
-//       player.setAttribute("cx", prevX);
-//     }else{
-//       player.setAttribute("cx", prevX + size);
-//     }
-//
-//
-//   }
-//
-// }
+var trail = [{"dir": "none",
+              "line": "dummy"}];
 
 
 var isIn = function(block_x, block_y, wall){
@@ -284,17 +232,14 @@ var rightkeydown = false;
 
 document.onkeydown = function(e){
     //console.log(keydown);
-
-
-
-
-
-
+    console.log(trail[trail.length-1]["line"]);
     if(e.keyCode==37){
       if (!leftkeydown){
         leftkeydown = true;
         console.log("left")
 
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "red")
         var prevX = parseInt(player.getAttribute("cx"));
         var prevY = parseInt(player.getAttribute("cy"));
 
@@ -305,7 +250,24 @@ document.onkeydown = function(e){
         if (!leftWall){
 
           player.setAttribute("cx", prevX - size);
-          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+
+          if (trail[trail.length-1]["dir"] == "right"){
+
+            vimg.removeChild(trail[trail.length-1]["line"])
+            trail.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX - size);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY);
+
+
+            vimg.appendChild(trace);
+
+            trail.push({"dir":"left",
+                        "line": trace})
+          }
+
         }
       }
     }
@@ -313,6 +275,9 @@ document.onkeydown = function(e){
       if (!upkeydown){
         upkeydown = true;
         console.log("up")
+
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "red")
         var prevX = parseInt(player.getAttribute("cx"));
         var prevY = parseInt(player.getAttribute("cy"));
 
@@ -322,9 +287,24 @@ document.onkeydown = function(e){
         var topWall = isIn(block_x/size, block_y/size, "wall_1");
         if (!topWall){
           //console.log("maze[block_x][block_y]", maze[block_x][block_y]["wall_1"]);
-          console.log(topWall);
+
           player.setAttribute("cy", prevY - size);
-          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+
+          if (trail[trail.length-1]["dir"] == "down"){
+
+            vimg.removeChild(trail[trail.length-1]["line"])
+            trail.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY - size);
+
+            vimg.appendChild(trace);
+
+            trail.push({"dir":"up",
+                        "line": trace})
+          }
         }
       }
     }
@@ -333,6 +313,9 @@ document.onkeydown = function(e){
         rightkeydown = true;
         console.log("right")
         //console.log("maze[block_x][block_y]", maze[block_x][block_y]["wall_4"]);
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "red")
+
         var prevX = parseInt(player.getAttribute("cx"));
         var prevY = parseInt(player.getAttribute("cy"));
 
@@ -343,7 +326,21 @@ document.onkeydown = function(e){
         if (!rightWall){
 
           player.setAttribute("cx", prevX + size);
-          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+          if (trail[trail.length-1]["dir"] == "left"){
+
+            vimg.removeChild(trail[trail.length-1]["line"])
+            trail.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX + size);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY);
+
+            vimg.appendChild(trace);
+
+            trail.push({"dir":"right",
+                        "line": trace})
+          }
         }
       }
 
@@ -352,6 +349,9 @@ document.onkeydown = function(e){
       if (!downkeydown){
         downkeydown = true;
         console.log("down")
+
+        var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
+        trace.setAttribute("stroke", "red")
 
         var prevX = parseInt(player.getAttribute("cx"));
         var prevY = parseInt(player.getAttribute("cy"));
@@ -362,10 +362,23 @@ document.onkeydown = function(e){
         var botWall = isIn(block_x/size, block_y/size, "wall_2");
 
         if (!botWall){
-          console.log("botWall",botWall);
-          console.log("maze[block_x][block_y]",block_y);
           player.setAttribute("cy", prevY + size);
-          console.log("cx, cy",player.getAttribute("cx"), player.getAttribute("cy"));
+
+          if (trail[trail.length-1]["dir"] == "up"){
+
+            vimg.removeChild(trail[trail.length-1]["line"])
+            trail.pop();
+          }else{
+            trace.setAttribute("x1", prevX);
+            trace.setAttribute("x2", prevX);
+            trace.setAttribute("y1", prevY);
+            trace.setAttribute("y2", prevY + size);
+
+            vimg.appendChild(trace);
+
+            trail.push({"dir":"down",
+                        "line": trace})
+          }
         }
       }
 
