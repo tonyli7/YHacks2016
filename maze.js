@@ -1,15 +1,19 @@
 var vimg = document.getElementById("vimg");
+//var wimg = document.getElementById("wimg");
 
 //=========================================Maze Code==================================
 var width = 20;
 var height = 20;
 var maze = [];
-var size = 30;
+var maze2 = [];
+var size = 14;
 //initialize walls code
+
 
 var makeTemp = function(width, height, block_h, block_w){
   for (i = 0; i < width; i++){
     maze.push([])
+
     for (j = 0; j < height; j++){
       var block = document.createElementNS("http://www.w3.org/2000/svg","rect");
       block.setAttribute("x", i*block_h);
@@ -139,7 +143,6 @@ var makePath = function(block_x, block_y){
   curr["block"].setAttribute("fill","white");
   if (hasUVN(neighbors)){
 
-
       rand_num = Math.floor(Math.random()*uvn.length);
 
       stack.push(uvn[rand_num]);
@@ -162,15 +165,11 @@ var makePath = function(block_x, block_y){
                     vimg.removeChild(maze[parseInt((uvn[rand_num]["block"].getAttribute("x")))/size][parseInt((uvn[rand_num]["block"].getAttribute("y")))/size][uvn_key]);
                     delete maze[parseInt((uvn[rand_num]["block"].getAttribute("x")))/size][parseInt((uvn[rand_num]["block"].getAttribute("y")))/size][uvn_key];
 
-
-                        //var oldChild2 = vimg.removeChild( uvn[uvn_key]);
           }
 
         }
       }
     }
-
-
     return makePath(uvn[rand_num]["block"].getAttribute("x")/size, uvn[rand_num]["block"].getAttribute("y")/size);
 
     } else if (stack.length != 0){
@@ -183,6 +182,7 @@ var makePath = function(block_x, block_y){
       return makePath(temp_x, temp_y);
 
     }
+
 }
 
 
@@ -192,6 +192,7 @@ var makePath = function(block_x, block_y){
 
 makePath(start_x, start_y);
 
+
 var end = document.createElementNS("http://www.w3.org/2000/svg","text");
 end.textContent = "END"
 end.setAttribute("x", width*size - size/2-size/4)
@@ -199,7 +200,41 @@ end.setAttribute("y", height*size - size/2)
 end.setAttribute("font-size", 8)
 vimg.appendChild(end);
 
+//make second copy
+var maze2 = maze;
+for (i = 0; i < maze2.length; i++){
+  console.log(maze2[i])
+  for (j = 0; j < maze2[i].length; j++){
+    for (var key in maze2[i][j]){
 
+        if (key == "block"){
+          var block = document.createElementNS("http://www.w3.org/2000/svg","rect");
+          block.setAttribute("x", parseInt(maze2[i][j][key].getAttribute("x")));
+          block.setAttribute("y", parseInt(maze2[i][j][key].getAttribute("y")) + height*size + 30);
+          block.setAttribute("fill", maze2[i][j][key].getAttribute("fill"));
+          block.setAttribute("width", maze2[i][j][key].getAttribute("width"));
+          block.setAttribute("height", maze2[i][j][key].getAttribute("height"));
+          vimg.appendChild(block);
+        }else{
+          var wall = document.createElementNS("http://www.w3.org/2000/svg","line");
+          wall.setAttribute("x1", parseInt(maze2[i][j][key].getAttribute("x1")));
+          wall.setAttribute("y1", parseInt(maze2[i][j][key].getAttribute("y1")) + height*size + 30);
+          wall.setAttribute("x2", parseInt(maze2[i][j][key].getAttribute("x2")));
+          wall.setAttribute("y2", parseInt(maze2[i][j][key].getAttribute("y2")) + height*size + 30);
+          wall.setAttribute("stroke", maze2[i][j][key].getAttribute("stroke"));
+          vimg.appendChild(wall);
+        }
+
+    }
+  }
+}
+
+var end2 = document.createElementNS("http://www.w3.org/2000/svg","text");
+end2.textContent = "END"
+end2.setAttribute("x", width*size - size/2-size/4)
+end2.setAttribute("y", height*size - size/2 + height*size + 30)
+end2.setAttribute("font-size", 8)
+vimg.appendChild(end2);
 //============================================Player Code==========================================================================================
 
 var player = document.createElementNS("http://www.w3.org/2000/svg","circle");
@@ -312,7 +347,7 @@ document.onkeydown = function(e){
       if (!rightkeydown){
         rightkeydown = true;
         console.log("right")
-        //console.log("maze[block_x][block_y]", maze[block_x][block_y]["wall_4"]);
+
         var trace = document.createElementNS("http://www.w3.org/2000/svg","line");
         trace.setAttribute("stroke", "red")
 
@@ -381,8 +416,6 @@ document.onkeydown = function(e){
           }
         }
       }
-
-
     }
 }
 
@@ -394,5 +427,3 @@ document.onkeyup = function(e){
     downkeydown = false;
 
 }
-
-intervalID = window.setInterval(onkeydown,1);
